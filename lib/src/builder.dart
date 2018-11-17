@@ -128,15 +128,24 @@ class MarkdownBuilder implements md.NodeVisitor {
 
     _addParentInlineIfNeeded(_blocks.last.tag);
 
-    final TextSpan span = _blocks.last.tag == 'pre'
-      ? delegate.formatText(styleSheet, text.text)
-      : new TextSpan(
-          style: _inlines.last.style,
-          text: text.text,
-          recognizer: _linkHandlers.isNotEmpty ? _linkHandlers.last : null,
-        );
+    _inlines.last.children.add(
+      _blocks.last.tag == 'pre'
+          ? SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: RichText(
+                text: delegate.formatText(styleSheet, text.text),
+              ),
+            )
+          : RichText(
+              text: TextSpan(
+                style: _inlines.last.style,
+                text: text.text,
+                recognizer:
+                    _linkHandlers.isNotEmpty ? _linkHandlers.last : null,
+              ),
+            ),
+    );
 
-    _inlines.last.children.add(new RichText(text: span));
   }
 
   @override
